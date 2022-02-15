@@ -89,6 +89,42 @@ const getAllPublicRoutines = async () => {
       )
     })
 
+    return routines
+  } catch (err) {
+    throw err
+  }
+}
+
+const getAllRoutinesByUser = async ({ username }) => {
+  try {
+    // selects the specified columns from the routines table
+    // and joins the users table to the routines table
+    // ON rountines."creatorId" equals user.id
+    // WHERE isPublic equals true
+    const { rows: routines } = await client.query(
+      `
+      SELECT r.id, r."creatorId", r."isPublic", r.name, r.goal, u.username AS "creatorName"
+      FROM routines r
+      JOIN users u ON r."creatorId" = u.id
+      WHERE u.username = $1;
+    `,
+      [username]
+    )
+    // selects all columns from the activities table
+    // and joins the routines_activites table to the activities table
+    // where routine_activites."activityId" equals activites.id
+    const { rows: activities } = await client.query(`
+      SELECT * 
+      FROM activities a
+      JOIN routine_activities ra ON ra."activityId" = a.id;
+    `)
+
+    routines.forEach((routine) => {
+      routine.activities = activities.filter(
+        (activity) => activity.routineId === routine.id
+      )
+    })
+
     console.log('routines :>> ', routines)
     return routines
   } catch (err) {
@@ -101,4 +137,5 @@ module.exports = {
   getRoutinesWithoutActivities,
   getAllRoutines,
   getAllPublicRoutines,
+  getAllRoutinesByUser,
 }
