@@ -20,6 +20,25 @@ const createRoutine = async ({ creatorId, isPublic, name, goal }) => {
   }
 }
 
+const getRoutineById = async (routineId) => {
+  try {
+    const {
+      rows: [routineById],
+    } = await client.query(
+      `
+      SELECT *
+      FROM routines
+      WHERE id=$1;
+    `,
+      [routineId]
+    )
+
+    return routineById
+  } catch (err) {
+    throw err
+  }
+}
+
 const getRoutinesWithoutActivities = async () => {
   try {
     const { rows: routines } = await client.query(`
@@ -209,6 +228,7 @@ const getPublicRoutinesByActivity = async ({ id }) => {
 
 module.exports = {
   createRoutine,
+  getRoutineById,
   getRoutinesWithoutActivities,
   getAllRoutines,
   getAllPublicRoutines,
