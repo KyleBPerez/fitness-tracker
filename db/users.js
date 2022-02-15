@@ -66,8 +66,6 @@ const getUserById = async (userId) => {
       [userId]
     )
 
-    if (!user) return
-    console.log('user :>> ', user)
     return user
   } catch (err) {
     throw err
