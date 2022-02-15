@@ -50,8 +50,27 @@ const updateActivity = async ({ id, name, description }) => {
   }
 }
 
+const getActivityById = async (activityId) => {
+  try {
+    const {
+      rows: [activity],
+    } = await client.query(
+      `
+      SELECT *
+      FROM activities
+      WHERE id=$1
+    `,
+      [activityId]
+    )
+    return activity
+  } catch (err) {
+    throw err
+  }
+}
+
 module.exports = {
   createActivity,
   getAllActivities,
   updateActivity,
+  getActivityById,
 }
