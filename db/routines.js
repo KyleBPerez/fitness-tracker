@@ -168,6 +168,45 @@ const getPublicRoutinesByUser = async ({ username }) => {
   }
 }
 
+const getPublicRoutinesByActivity = async ({ id }) => {
+  try {
+    // selects the specified columns from the routines table
+    // and joins the users table to the routines table
+    // and joins routine_activities table on routines for our WHERE clause
+    // ON rountines."creatorId" equals user.id
+    // WHERE users.username equals the obj.username passed into the function
+    // AND routines."isPublic" equals true
+    const { rows: routines } = await client.query(
+      `
+      SELECT r.id, r."creatorId", r."isPublic", r.name, r.goal, u.username AS "creatorName"
+      FROM routines r
+      JOIN users u ON r."creatorId" = u.id
+      JOIN routine_activities ra ON ra."routineId" = r.id
+      WHERE ra."activityId" = $1 AND r."isPublic" = true;
+    `,
+      [id]
+    )
+    // selects all columns from the activities table
+    // and joins the routines_activites table to the activities table
+    // where routine_activites."activityId" equals activites.id
+    const { rows: activities } = await client.query(`
+      SELECT * 
+      FROM activities a
+      JOIN routine_activities ra ON ra."activityId" = a.id;
+    `)
+
+    routines.forEach((routine) => {
+      routine.activities = activities.filter(
+        (activity) => activity.routineId === routine.id
+      )
+    })
+
+    return routines
+  } catch (err) {
+    throw err
+  }
+}
+
 module.exports = {
   createRoutine,
   getRoutinesWithoutActivities,
@@ -175,4 +214,5 @@ module.exports = {
   getAllPublicRoutines,
   getAllRoutinesByUser,
   getPublicRoutinesByUser,
+  getPublicRoutinesByActivity,
 }
