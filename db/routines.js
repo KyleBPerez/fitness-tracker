@@ -226,6 +226,35 @@ const getPublicRoutinesByActivity = async ({ id }) => {
   }
 }
 
+const updateRoutine = async (routineObj) => {
+  // creates an array from the Object values
+  const setString = Object.keys(routineObj)
+    // loops through keys array creating ["5"=$1, "isPublic"=$2,...]
+    // then joins them with a ', '
+    // setString = `"5"=$1, "isPublic"=$2, "name"=$3`
+    // allowing  for varying fields to be inputed
+    .map((key, idx) => `"${key}"=$${idx + 1}`)
+    .join(', ')
+
+  try {
+    const {
+      rows: [updatedRoutine],
+    } = await client.query(
+      `
+      UPDATE routines 
+      SET ${setString}
+      WHERE id=${routineObj.id}
+      RETURNING *;
+    `,
+      Object.values(routineObj)
+    )
+
+    return updatedRoutine
+  } catch (err) {
+    throw err
+  }
+}
+
 module.exports = {
   createRoutine,
   getRoutineById,
@@ -235,4 +264,5 @@ module.exports = {
   getAllRoutinesByUser,
   getPublicRoutinesByUser,
   getPublicRoutinesByActivity,
+  updateRoutine,
 }
