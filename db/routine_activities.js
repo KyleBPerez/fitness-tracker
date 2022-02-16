@@ -41,7 +41,34 @@ const getRoutineActivitiesByRoutine = async ({ id }) => {
   }
 }
 
+const updateRoutineActivity = async (routineActivityObj = {}) => {
+  try {
+    const setString = Object.keys(routineActivityObj)
+      .map((key, idx) => `"${key}"=$${idx + 1}`)
+      .join(', ')
+
+    if (setString.length === 0) return
+
+    const {
+      rows: [updatedRoutineActivity],
+    } = await client.query(
+      `
+        UPDATE routine_activities
+        SET ${setString}
+        WHERE id = ${routineActivityObj.id}
+        RETURNING *;
+      `,
+      Object.values(routineActivityObj)
+    )
+
+    return updatedRoutineActivity
+  } catch (err) {
+    throw err
+  }
+}
+
 module.exports = {
   addActivityToRoutine,
   getRoutineActivitiesByRoutine,
+  updateRoutineActivity,
 }
