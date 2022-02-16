@@ -259,9 +259,16 @@ const destroyRoutine = async (routineId) => {
   try {
     await client.query(
       `
+      DELETE FROM routine_activities ra
+      WHERE ra."routineId" = $1
+    `,
+      [routineId]
+    )
+
+    await client.query(
+      `
       DELETE FROM routines r
-      USING routine_activities
-      WHERE r.id=$1;
+      WHERE r.id = $1
     `,
       [routineId]
     )
