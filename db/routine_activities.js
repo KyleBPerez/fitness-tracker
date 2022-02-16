@@ -67,8 +67,28 @@ const updateRoutineActivity = async (routineActivityObj = {}) => {
   }
 }
 
+const destroyRoutineActivity = async (id) => {
+  try {
+    const {
+      rows: [deleted],
+    } = await client.query(
+      `
+      DELETE FROM routine_activities
+      WHERE id=$1
+      RETURNING *;
+    `,
+      [id]
+    )
+
+    return deleted
+  } catch (err) {
+    throw err
+  }
+}
+
 module.exports = {
   addActivityToRoutine,
   getRoutineActivitiesByRoutine,
   updateRoutineActivity,
+  destroyRoutineActivity,
 }
