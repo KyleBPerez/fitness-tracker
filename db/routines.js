@@ -255,6 +255,21 @@ const updateRoutine = async (routineObj) => {
   }
 }
 
+const destroyRoutine = async (routineId) => {
+  try {
+    await client.query(
+      `
+      DELETE FROM routines r
+      USING routine_activities
+      WHERE r.id=$1;
+    `,
+      [routineId]
+    )
+  } catch (err) {
+    throw err
+  }
+}
+
 module.exports = {
   createRoutine,
   getRoutineById,
@@ -265,4 +280,5 @@ module.exports = {
   getPublicRoutinesByUser,
   getPublicRoutinesByActivity,
   updateRoutine,
+  destroyRoutine,
 }

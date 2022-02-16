@@ -24,6 +24,24 @@ const addActivityToRoutine = async ({
   }
 }
 
+const getRoutineActivitiesByRoutine = async ({ id }) => {
+  try {
+    const { rows: activitiesByRoutine } = await client.query(
+      `
+      SELECT *
+      FROM routine_activities ra
+      WHERE ra."routineId" = $1
+    `,
+      [id]
+    )
+
+    return activitiesByRoutine
+  } catch (err) {
+    throw err
+  }
+}
+
 module.exports = {
   addActivityToRoutine,
+  getRoutineActivitiesByRoutine,
 }
