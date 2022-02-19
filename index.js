@@ -18,7 +18,7 @@ app.use(express.json());
 const apiRouter = require('./api');
 app.use('/api', apiRouter);
 
-const { client } = require('./db');
+const client = require('./db/client')
 
 app.get('/',(req,res,next)=>{
     res.status(404).send('PAGE NOT FOUND')
@@ -26,7 +26,7 @@ app.get('/',(req,res,next)=>{
 app.use((error,req,res,next)=>{
     res.status(500).send(error);
 })
-app.listen(PORT), () => {
+app.listen(PORT, () => {
     client.connect();
     console.log("Server is up on: ", PORT)
-}
+})
