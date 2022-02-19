@@ -57,7 +57,9 @@ const getUserByUsername = async (username) => {
 
 const getUserById = async (userId) => {
   try {
-    const { rows: user } = await client.query(
+    const {
+      rows: [user],
+    } = await client.query(
       `
     SELECT *
     FROM users
@@ -65,10 +67,7 @@ const getUserById = async (userId) => {
   `,
       [userId]
     )
-
-    if (!user) return
-    console.log('user :>> ', user)
-    return user
+    return user || {}
   } catch (err) {
     throw err
   }
