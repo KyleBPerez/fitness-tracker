@@ -3,8 +3,7 @@
 // export the api router
 const express = require('express');
 
-// const jwt = require('jsonwebtoken');
-// const {JWT_SECRET} = process.env
+
 
 const apiRouter = express.Router();
 apiRouter.use('/users',require('./users'))

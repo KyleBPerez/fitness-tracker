@@ -1,35 +1,60 @@
+
 const express = require('express');
 const usersRouter = express.Router();
-const{
+const {
     createUser,
-    getUserByUsername
+    getUserByUsername,
+    getUser
 } = require('../db');
+const jwt = require('jsonwebtoken')
+const { JWT_SECRET } = process.env
 
 
 
+usersRouter.post('/register', async (req, res, next) => {
 
-usersRouter.post('/register',async(req,res,next)=>{
-    
     try {
-        const {username,password} = req.body
-        console.log(req)
+        const { username, password } = req.body
         const userCheck = await getUserByUsername(username)
-        if(userCheck){
-            throw new Error('Username already exists')
+        if (userCheck) {
+            next('Username already exists')
+            return
         }
-        if(password.length < 8){
-            throw new Error('Password too short')
+        if (password.length < 8) {
+            next('Password too short')
+            return
         }
 
-        const user = await createUser({username,password})
-        res.send({user})
+        const user = await createUser({ username, password })
+        res.send({ user:user })
     } catch (error) {
-         next(error)
+        next(error)
     }
 })
 
-usersRouter.post('/login',async(req,res,next)=>{
-    const {username,password} = req.body
+usersRouter.post('/login', async (req, res, next) => {
+    const { username, password } = req.body;
+    console.log('hello');
+    if (!username || !password) {
+        next({
+            name: 'username does not exist',
+            message: 'please provide a valid credentials'
+        })
+        return
+    }
+    try {
+        const user = await getUser({ username, password })
+        if(!user){
+            next({message:'password dont match'})
+            return
+        }
+        
+        const token = jwt.sign(user, JWT_SECRET);
+        console.log(token)
+        res.send({ token, message: 'Successfully logged In' })
+    } catch (error) {
+        next(error)
+    }
 
 })
 
