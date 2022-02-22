@@ -1,5 +1,5 @@
 // create the express server here
-require('dotenv').config
+require('dotenv').config();
 
 const { PORT = 3000 } = process.env;
 
@@ -20,7 +20,7 @@ app.use('/api', apiRouter);
 
 const client = require('./db/client')
 
-app.get('/',(req,res,next)=>{
+app.get('*',(req,res,next)=>{
     res.status(404).send('PAGE NOT FOUND')
 })
 app.use((error,req,res,next)=>{
