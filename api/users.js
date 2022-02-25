@@ -63,7 +63,6 @@ usersRouter.get('/me', requireUser, async (req, res, next) => {
 
 usersRouter.get('/:username/routines', async (req, res, next) => {
   try {
-    // localhost:3000/api/albert/routines
     const { username } = req.params
     const user = await getUserByUsername(username)
     if (!user) {
