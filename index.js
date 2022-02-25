@@ -1,32 +1,28 @@
 // create the express server here
-require('dotenv').config();
-
-const { PORT = 3000 } = process.env;
-
-const express = require('express');
-const app = express();
-
-const morgan = require('morgan');
-
-app.use(morgan('dev'));
-
-const cors = require('cors');
-
-app.use(cors());
-app.use(express.json());
-
-const apiRouter = require('./api');
-app.use('/api', apiRouter);
-
+require('dotenv').config()
+const express = require('express')
+const morgan = require('morgan')
+const cors = require('cors')
 const client = require('./db/client')
+const apiRouter = require('./api')
+const { PORT = 3000 } = process.env
 
-app.get('*',(req,res,next)=>{
-    res.status(404).send('PAGE NOT FOUND')
+const app = express()
+app.use(morgan('dev'))
+app.use(cors())
+app.use(express.json())
+
+app.use('/api', apiRouter)
+
+app.get('*', (req, res, next) => {
+  res.status(404).send('PAGE NOT FOUND')
 })
-app.use((error,req,res,next)=>{
-    res.status(500).send(error);
+
+app.use((error, req, res, next) => {
+  res.status(500).send(error)
 })
+
 app.listen(PORT, () => {
-    client.connect();
-    console.log("Server is up on: ", PORT)
+  client.connect()
+  console.log(`Server is up one http://localhost:${PORT}`)
 })
