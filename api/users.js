@@ -11,7 +11,6 @@ const {
 } = require('../db')
 
 usersRouter.post('/register', async (req, res, next) => {
-
   try {
     const { username, password } = req.body
     const userCheck = await getUserByUsername(username)
@@ -35,7 +34,7 @@ usersRouter.post('/login', async (req, res, next) => {
   const { username, password } = req.body
   if (!username || !password) {
     next({
-      name: 'username does not exist',
+      name: 'CredentialError',
       message: 'please provide a valid credentials',
     })
     return
@@ -79,7 +78,5 @@ usersRouter.get('/:username/routines', async (req, res, next) => {
     next(error)
   }
 })
-
-
 
 module.exports = usersRouter
