@@ -22,7 +22,7 @@ usersRouter.post('/register', async (req, res, next) => {
     }
 
     const user = await createUser({ username, password })
-    res.send({ user: user })
+    res.send({ user })
   } catch (error) {
     next(error)
   }
