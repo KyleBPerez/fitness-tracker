@@ -8,7 +8,6 @@ const {
   createRoutine,
   destroyRoutine,
   addActivityToRoutine,
-  getActivityById,
 } = require("../db");
 const { requireUser } = require("./utils");
 
