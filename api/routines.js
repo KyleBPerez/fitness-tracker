@@ -6,6 +6,7 @@ const {
   getRoutineById,
   updateRoutine,
   createRoutine,
+  destroyRoutine
 } = require("../db");
 const { requireUser } = require("./utils");
 
@@ -63,5 +64,25 @@ routineRouter.patch("/:routineId", requireUser, async (req, res, next) => {
     next(error);
   }
 });
+
+routineRouter.delete('/:routineId',requireUser,async(req,res,next)=>{
+  const {routineId:id}= req.params
+  try {
+    const routine  = await getRoutineById(id)
+    if(!routine){
+      next({
+        name:'noRoutine',
+        message:'No routine was found'
+      })
+      return
+    }
+    if(routine.creatorId === req.user.id){
+      const deleteRoutine = await destroyRoutine(id)
+      res.send(deleteRoutine)
+    }
+  } catch (error) {
+    next(error)
+  }
+})
 
 module.exports = routineRouter;
