@@ -3,6 +3,7 @@ const {
   updateRoutineActivity,
   getRoutineActivityById,
   getRoutineById,
+  destroyRoutineActivity,
 } = require("../db");
 const { requireUser } = require("./utils");
 
@@ -38,5 +39,24 @@ routine_ActivitiesRouter.patch(
     }
   }
 );
+
+routine_ActivitiesRouter.delete('/:routineActivityId',requireUser,async(req,res,next)=>{
+  const {routineActivityId}= req.params
+  try {
+    const routactivity = await getRoutineActivityById(routineActivityId);
+    const routine = await getRoutineById(routactivity.routineId);
+    if (req.user.id === routine.creatorId) {
+      const deleteRoutineActivity = await destroyRoutineActivity(routineActivityId);
+      res.send(deleteRoutineActivity);
+    } else {
+      next({
+        name: `UserOwnerError`,
+        message: `User must be the owner to update`,
+      });
+    }
+  } catch (error) {
+    next(error)
+  }
+})
 
 module.exports = routine_ActivitiesRouter;
