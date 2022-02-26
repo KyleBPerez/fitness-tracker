@@ -34,10 +34,14 @@ const getUser = async ({ username, password }) => {
     const user = await getUserByUsername(username)
     const hashedPassword = user.password
     const passwordsMatch = await bcrypt.compare(password, hashedPassword)
-    if (passwordsMatch) {
-      delete user.password
-      return user
-    }
+    if (!passwordsMatch)
+      throw {
+        name: `UserPasswordError`,
+        message: `Provided password does NOT match`,
+      }
+
+    delete user.password
+    return user
   } catch (err) {
     throw err
   }

@@ -32,18 +32,13 @@ usersRouter.post('/login', async (req, res, next) => {
   const { username, password } = req.body
   if (!username || !password) {
     next({
-      name: 'username does not exist',
-      message: 'please provide a valid credentials',
+      name: 'loginCredentialError',
+      message: 'Must provide a valid username and password',
     })
     return
   }
   try {
     const user = await getUser({ username, password })
-    if (!user) {
-      next({ message: 'password dont match' })
-      return
-    }
-
     const token = jwt.sign(user, JWT_SECRET)
     res.send({ token, message: 'Successfully logged In' })
   } catch (error) {
