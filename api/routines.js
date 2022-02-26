@@ -1,15 +1,67 @@
-const express = require('express')
+const express = require("express");
 
-const routineRouter = express.Router()
-const { getAllRoutines } = require('../db')
+const routineRouter = express.Router();
+const {
+  getAllPublicRoutines,
+  getRoutineById,
+  updateRoutine,
+  createRoutine,
+} = require("../db");
+const { requireUser } = require("./utils");
 
-routineRouter.get('/',async(req,res,next)=>{
-    try {
-        const routines = await getAllRoutines()
-        res.send(routines)
-    } catch (error) {
-        next(error)
+routineRouter.get("/", async (req, res, next) => {
+  try {
+    const routines = await getAllPublicRoutines();
+    res.send(routines);
+  } catch (error) {
+    next(error);
+  }
+});
+
+routineRouter.post("/", requireUser, async (req, res, next) => {
+  const routineInfo = req.body;
+  routineInfo.creatorId = req.user.id;
+  try {
+    const newRoutine = await createRoutine(routineInfo);
+    res.send(newRoutine);
+  } catch (err) {}
+});
+
+routineRouter.patch("/:routineId", requireUser, async (req, res, next) => {
+  const { routineId: id } = req.params;
+  const { isPublic, name, goal } = req.body;
+  const updateFields = { id };
+
+  if (isPublic) {
+    updateFields.isPublic = isPublic;
+  }
+  if (name) {
+    updateFields.name = name;
+  }
+  if (goal) {
+    updateFields.goal = goal;
+  }
+  try {
+    const originalRoutine = await getRoutineById(id);
+    if (!originalRoutine) {
+      next({
+        name: "RoutineError",
+        message: "This Routine does not exist",
+      });
+      return;
     }
-})
+    if (originalRoutine.creatorId === req.user.id) {
+      const newRoutine = await updateRoutine(updateFields);
+      res.send(newRoutine);
+    } else {
+      next({
+        name: "Unauthorized User",
+        message: "Can not update routine unless you are the owner",
+      });
+    }
+  } catch (error) {
+    next(error);
+  }
+});
 
-module.exports = routineRouter
+module.exports = routineRouter;

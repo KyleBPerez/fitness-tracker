@@ -248,7 +248,6 @@ describe('API', () => {
           routineToCreateAndUpdate,
           { headers: { Authorization: `Bearer ${token}` } }
         )
-
         expect(respondedRoutine.name).toEqual(routineToCreateAndUpdate.name)
         expect(respondedRoutine.goal).toEqual(routineToCreateAndUpdate.goal)
         expect(respondedRoutine.name).toEqual(routineToCreateAndUpdate.name)
