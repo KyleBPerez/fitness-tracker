@@ -16,6 +16,13 @@ const createUser = async ({ username, password }) => {
     `,
       [username, hashPassword]
     )
+
+    if (!user)
+      throw {
+        name: `UsernameExistError`,
+        message: `This username already exists`,
+      }
+
     return user
   } catch (err) {
     throw err

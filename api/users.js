@@ -11,13 +11,8 @@ const {
 } = require('../db')
 
 usersRouter.post('/register', async (req, res, next) => {
+  const { username, password } = req.body
   try {
-    const { username, password } = req.body
-    const userCheck = await getUserByUsername(username)
-    if (userCheck) {
-      next({ name: `UserExistError`, message: 'Username already exists' })
-      return
-    }
     if (password.length < 8) {
       next({
         name: `PasswordLengthError`,
