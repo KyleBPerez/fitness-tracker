@@ -57,7 +57,10 @@ usersRouter.get('/me', requireUser, async (req, res, next) => {
 usersRouter.get('/:username/routines', async (req, res, next) => {
   try {
     const { username } = req.params
-    const user = await getUserByUsername(username)
+    const user = await getUserByUsername(username).then((user) => {
+      delete user.password
+      return user
+    })
     const routinesByUser = await getPublicRoutinesByUser(user)
     res.send(routinesByUser)
   } catch (error) {
