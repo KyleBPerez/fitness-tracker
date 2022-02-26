@@ -60,6 +60,12 @@ const getUserByUsername = async (username) => {
       [username]
     )
 
+    if (!user)
+      throw {
+        name: `FindUserByUsernameError`,
+        message: `Unable to find a user with the username: ${username}`,
+      }
+
     return user
   } catch (err) {
     throw err
