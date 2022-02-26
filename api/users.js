@@ -58,13 +58,6 @@ usersRouter.get('/:username/routines', async (req, res, next) => {
   try {
     const { username } = req.params
     const user = await getUserByUsername(username)
-    if (!user) {
-      next({
-        name: `UserExistError`,
-        message: `This username does NOT exist`,
-      })
-      return
-    }
     const routinesByUser = await getPublicRoutinesByUser(user)
     res.send(routinesByUser)
   } catch (error) {
