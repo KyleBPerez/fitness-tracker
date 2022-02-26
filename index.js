@@ -1,32 +1,28 @@
 // create the express server here
-require('dotenv').config
+require('dotenv').config()
+const express = require('express')
+const morgan = require('morgan')
+const cors = require('cors')
+const client = require('./db/client')
+const apiRouter = require('./api')
+const { PORT = 3000 } = process.env
 
-const { PORT = 3000 } = process.env;
+const app = express()
+app.use(morgan('dev'))
+app.use(cors())
+app.use(express.json())
 
-const express = require('express');
-const app = express();
+app.use('/api', apiRouter)
 
-const morgan = require('morgan');
-
-app.use(morgan('dev'));
-
-const cors = require('cors');
-
-app.use(cors());
-app.use(express.json());
-
-const apiRouter = require('./api');
-app.use('/api', apiRouter);
-
-const { client } = require('./db');
-
-app.get('/',(req,res,next)=>{
-    res.status(404).send('PAGE NOT FOUND')
+app.get('*', (req, res, next) => {
+  res.status(404).send('PAGE NOT FOUND')
 })
-app.use((error,req,res,next)=>{
-    res.status(500).send(error);
+
+app.use((error, req, res, next) => {
+  res.status(500).send(error)
 })
-app.listen(PORT), () => {
-    client.connect();
-    console.log("Server is up on: ", PORT)
-}
+
+app.listen(PORT, () => {
+  client.connect()
+  console.log(`Server is up one http://localhost:${PORT}`)
+})

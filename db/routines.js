@@ -260,18 +260,23 @@ const destroyRoutine = async (routineId) => {
     await client.query(
       `
       DELETE FROM routine_activities ra
-      WHERE ra."routineId" = $1
+      WHERE ra."routineId" = $1;
     `,
       [routineId]
     )
 
-    await client.query(
+    const {
+      rows: [deletedRoutine],
+    } = await client.query(
       `
       DELETE FROM routines r
       WHERE r.id = $1
+      RETURNING *;
     `,
       [routineId]
     )
+
+    return deletedRoutine
   } catch (err) {
     throw err
   }
