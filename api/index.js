@@ -43,5 +43,6 @@ apiRouter.get('/health', async (req, res, next) => {
 apiRouter.use('/users', require('./users'))
 apiRouter.use('/activities',require('./activities'))
 apiRouter.use('/routines',require('./routines'))
+apiRouter.use('/routine_activities',require('./routine_activities'))
 
 module.exports = apiRouter
