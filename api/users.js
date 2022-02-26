@@ -11,16 +11,18 @@ const {
 } = require('../db')
 
 usersRouter.post('/register', async (req, res, next) => {
-
   try {
     const { username, password } = req.body
     const userCheck = await getUserByUsername(username)
     if (userCheck) {
-      next('Username already exists')
+      next({ name: `UserExistError`, message: 'Username already exists' })
       return
     }
     if (password.length < 8) {
-      next('Password too short')
+      next({
+        name: `PasswordLengthError`,
+        message: 'Password must be 8 characters or more',
+      })
       return
     }
 
@@ -79,7 +81,5 @@ usersRouter.get('/:username/routines', async (req, res, next) => {
     next(error)
   }
 })
-
-
 
 module.exports = usersRouter
