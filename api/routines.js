@@ -6,7 +6,8 @@ const {
   getRoutineById,
   updateRoutine,
   createRoutine,
-  destroyRoutine
+  destroyRoutine,
+  addActivityToRoutine,
 } = require("../db");
 const { requireUser } = require("./utils");
 
@@ -65,24 +66,35 @@ routineRouter.patch("/:routineId", requireUser, async (req, res, next) => {
   }
 });
 
-routineRouter.delete('/:routineId',requireUser,async(req,res,next)=>{
-  const {routineId:id}= req.params
+routineRouter.delete("/:routineId", requireUser, async (req, res, next) => {
+  const { routineId: id } = req.params;
   try {
-    const routine  = await getRoutineById(id)
-    if(!routine){
+    const routine = await getRoutineById(id);
+    if (!routine) {
       next({
-        name:'noRoutine',
-        message:'No routine was found'
-      })
-      return
+        name: "noRoutine",
+        message: "No routine was found",
+      });
+      return;
     }
-    if(routine.creatorId === req.user.id){
-      const deleteRoutine = await destroyRoutine(id)
-      res.send(deleteRoutine)
+    if (routine.creatorId === req.user.id) {
+      const deleteRoutine = await destroyRoutine(id);
+      res.send(deleteRoutine);
     }
   } catch (error) {
-    next(error)
+    next(error);
   }
-})
+});
+
+routineRouter.post("/:routineId/activities", async (req, res, next) => {
+  const { routineId } = req.params;
+  const {count, duration, activityId} = req.body;
+  try {
+    const routActivities = await addActivityToRoutine({count, duration, routineId, activityId})
+    res.send(routActivities)
+  } catch (error) {
+    next(error);
+  }
+});
 
 module.exports = routineRouter;
