@@ -14,6 +14,12 @@ const createRoutine = async ({ creatorId, isPublic, name, goal }) => {
       [creatorId, isPublic, name, goal]
     )
 
+    if (!routine)
+      throw {
+        name: `RoutineNameError`,
+        message: `A routine with the name: ${name} already exist`,
+      }
+
     return routine
   } catch (err) {
     throw err
