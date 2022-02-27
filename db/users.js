@@ -32,6 +32,11 @@ const createUser = async ({ username, password }) => {
 const getUser = async ({ username, password }) => {
   try {
     const user = await getUserByUsername(username)
+    if (!user)
+      throw {
+        name: `userNotFoundError`,
+        message: `This user was not found`,
+      }
     const hashedPassword = user.password
     const passwordsMatch = await bcrypt.compare(password, hashedPassword)
     if (passwordsMatch) {

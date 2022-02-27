@@ -18,8 +18,8 @@ app.get('*', (req, res, next) => {
   res.status(404).send('PAGE NOT FOUND')
 })
 
-app.use((error, req, res, next) => {
-  res.status(500).send(error)
+app.use(({ name, message }, req, res, next) => {
+  res.status(500).send({ name, message })
 })
 
 app.listen(PORT, () => {
