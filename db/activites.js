@@ -13,6 +13,13 @@ const createActivity = async ({ name, description }) => {
       `,
       [name, description]
     )
+
+    if (!activity)
+      throw {
+        name: `CreateActivityDupError`,
+        message: `Activity already exist with this name: ${name}`,
+      }
+
     return activity
   } catch (err) {
     throw err
@@ -43,7 +50,13 @@ const updateActivity = async ({ id, name, description }) => {
     `,
       [name, description, id]
     )
-    if (!activity) return
+
+    if (!activity)
+      throw {
+        name: `UpdateActivityError`,
+        message: `Can NOT update activity that does NOT exist`,
+      }
+
     return activity
   } catch (err) {
     throw err
@@ -62,6 +75,13 @@ const getActivityById = async (activityId) => {
     `,
       [activityId]
     )
+
+    if (!activity)
+      throw {
+        name: `ActivityError`,
+        message: `No Activity exists with that id`,
+      }
+
     return activity
   } catch (err) {
     throw err

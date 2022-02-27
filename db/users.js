@@ -16,6 +16,13 @@ const createUser = async ({ username, password }) => {
     `,
       [username, hashPassword]
     )
+
+    if (!user)
+      throw {
+        name: `UsernameExistError`,
+        message: `This username already exists`,
+      }
+
     return user
   } catch (err) {
     throw err
@@ -54,6 +61,12 @@ const getUserByUsername = async (username) => {
       [username]
     )
 
+    if (!user)
+      throw {
+        name: `FindUserByUsernameError`,
+        message: `Unable to find a user with the username: ${username}`,
+      }
+
     return user
   } catch (err) {
     throw err
@@ -72,7 +85,14 @@ const getUserById = async (userId) => {
   `,
       [userId]
     )
-    return user || {}
+
+    if (!user)
+      throw {
+        name: `UserExistError`,
+        message: `User with provided Id does NOT exist`,
+      }
+
+    return user
   } catch (err) {
     throw err
   }
