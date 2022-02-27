@@ -23,10 +23,9 @@ routineRouter.get('/', async (req, res, next) => {
 routineRouter.post('/', requireUser, async (req, res, next) => {
   const { isPublic, name, goal } = req.body
   const { id } = req.user
-  console.log('id :>> ', id)
   try {
     const newRoutine = await createRoutine({
-      creatorId: req.user.id,
+      creatorId: id,
       isPublic,
       name,
       goal,
