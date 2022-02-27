@@ -11,21 +11,18 @@ const {
 } = require('../db')
 
 usersRouter.post('/register', async (req, res, next) => {
-
+  const { username, password } = req.body
   try {
-    const { username, password } = req.body
-    const userCheck = await getUserByUsername(username)
-    if (userCheck) {
-      next('Username already exists')
-      return
-    }
     if (password.length < 8) {
-      next('Password too short')
+      next({
+        name: `PasswordLengthError`,
+        message: 'Password must be 8 characters or more',
+      })
       return
     }
 
     const user = await createUser({ username, password })
-    res.send({ user: user })
+    res.send({ user })
   } catch (error) {
     next(error)
   }
@@ -35,18 +32,13 @@ usersRouter.post('/login', async (req, res, next) => {
   const { username, password } = req.body
   if (!username || !password) {
     next({
-      name: 'username does not exist',
-      message: 'please provide a valid credentials',
+      name: 'loginCredentialError',
+      message: 'Must provide a valid username and password',
     })
     return
   }
   try {
     const user = await getUser({ username, password })
-    if (!user) {
-      next({ message: 'password dont match' })
-      return
-    }
-
     const token = jwt.sign(user, JWT_SECRET)
     res.send({ token, message: 'Successfully logged In' })
   } catch (error) {
@@ -65,21 +57,15 @@ usersRouter.get('/me', requireUser, async (req, res, next) => {
 usersRouter.get('/:username/routines', async (req, res, next) => {
   try {
     const { username } = req.params
-    const user = await getUserByUsername(username)
-    if (!user) {
-      next({
-        name: `UserExistError`,
-        message: `This username does NOT exist`,
-      })
-      return
-    }
+    const user = await getUserByUsername(username).then((user) => {
+      delete user.password
+      return user
+    })
     const routinesByUser = await getPublicRoutinesByUser(user)
     res.send(routinesByUser)
   } catch (error) {
     next(error)
   }
 })
-
-
 
 module.exports = usersRouter
