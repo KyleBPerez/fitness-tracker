@@ -23,8 +23,13 @@ routine_ActivitiesRouter.patch(
       updateFields.duration = duration
     }
     try {
-      const routactivity = await getRoutineActivityById(id)
-      const routine = await getRoutineById(routactivity.routineId)
+      const routActivity = await getRoutineActivityById(id)
+      if (!routActivity)
+        throw {
+          name: `RoutineActivityIdError`,
+          message: `No routine_activity exists with that id`,
+        }
+      const routine = await getRoutineById(routActivity.routineId)
       if (req.user.id === routine.creatorId) {
         const newRouteActivity = await updateRoutineActivity(updateFields)
         res.send(newRouteActivity)
