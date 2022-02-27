@@ -39,12 +39,6 @@ const getRoutineById = async (routineId) => {
       [routineId]
     )
 
-    if (!routineById)
-      throw {
-        name: `RoutineIdError`,
-        message: `No routine exists with that id`,
-      }
-
     return routineById
   } catch (err) {
     throw err

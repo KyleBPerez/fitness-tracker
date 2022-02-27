@@ -68,13 +68,13 @@ routineRouter.delete('/:routineId', requireUser, async (req, res, next) => {
   const { routineId: id } = req.params
   try {
     const routine = await getRoutineById(id)
-    if (!routine) {
+
+    if (!routine)
       next({
-        name: 'noRoutine',
-        message: 'No routine was found',
+        name: `RoutineByIdError`,
+        message: `No Routine exists with provided id`,
       })
-      return
-    }
+
     if (routine.creatorId === req.user.id) {
       const deleteRoutine = await destroyRoutine(id)
       res.send(deleteRoutine)
