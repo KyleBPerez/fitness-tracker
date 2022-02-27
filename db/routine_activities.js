@@ -99,12 +99,6 @@ const getRoutineActivityById = async (rActivityId) => {
       [rActivityId]
     )
 
-    if (!routineActivity)
-      throw {
-        name: `RoutineActivityIdError`,
-        message: `No routine_activity exists with that id`,
-      }
-
     return routineActivity
   } catch (err) {
     throw err
