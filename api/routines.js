@@ -50,13 +50,6 @@ routineRouter.patch('/:routineId', requireUser, async (req, res, next) => {
   }
   try {
     const originalRoutine = await getRoutineById(id)
-    if (!originalRoutine) {
-      next({
-        name: 'RoutineError',
-        message: 'This Routine does not exist',
-      })
-      return
-    }
     if (originalRoutine.creatorId === req.user.id) {
       const newRoutine = await updateRoutine(updateFields)
       res.send(newRoutine)
