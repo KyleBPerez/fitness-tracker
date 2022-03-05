@@ -42,6 +42,11 @@ const getUser = async ({ username, password }) => {
     if (passwordsMatch) {
       delete user.password
       return user
+    } else {
+      throw {
+        name: `IncorrectPassword`,
+        message: `Provided password is NOT correct`,
+      }
     }
   } catch (err) {
     throw err
