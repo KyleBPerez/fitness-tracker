@@ -23,6 +23,13 @@ routineRouter.get('/', async (req, res, next) => {
 routineRouter.post('/', requireUser, async (req, res, next) => {
   const { isPublic, name, goal } = req.body
   const { id } = req.user
+
+  if (!name || !goal)
+    throw {
+      name: `CreateRoutineErr`,
+      message: `Must complete all fields before creating a routine`,
+    }
+
   try {
     const newRoutine = await createRoutine({
       creatorId: id,
