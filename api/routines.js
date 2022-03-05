@@ -25,10 +25,10 @@ routineRouter.post('/', requireUser, async (req, res, next) => {
   const { id } = req.user
 
   if (!name || !goal)
-    throw {
+    next({
       name: `CreateRoutineErr`,
       message: `Must complete all fields before creating a routine`,
-    }
+    })
 
   try {
     const newRoutine = await createRoutine({
