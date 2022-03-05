@@ -38,7 +38,9 @@ routineRouter.post('/', requireUser, async (req, res, next) => {
       goal,
     })
     res.send(newRoutine)
-  } catch (err) {}
+  } catch (err) {
+    next(err)
+  }
 })
 
 routineRouter.patch('/:routineId', requireUser, async (req, res, next) => {
