@@ -102,6 +102,15 @@ routineRouter.post('/:routineId/activities', async (req, res, next) => {
     return
   }
 
+  if (!count)
+    throw { name: `ActivityCountErr`, message: `Must Provide Activity Count` }
+
+  if (!duration)
+    throw {
+      name: `DurationCountErr`,
+      message: `Must Provide Activity Duration`,
+    }
+
   try {
     const routActivities = await addActivityToRoutine({
       count,
