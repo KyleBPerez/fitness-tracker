@@ -18,6 +18,16 @@ const addActivityToRoutine = async ({
   `,
       [routineId, activityId, count, duration]
     )
+
+    if (!routineActivity.count)
+      throw { name: `ActivityCountErr`, message: `Must Provide Activity Count` }
+
+    if (!routineActivity.duration)
+      throw {
+        name: `DurationCountErr`,
+        message: `Must Provide Activity Duration`,
+      }
+
     return routineActivity
   } catch (err) {
     throw err

@@ -96,6 +96,12 @@ routineRouter.delete('/:routineId', requireUser, async (req, res, next) => {
 routineRouter.post('/:routineId/activities', async (req, res, next) => {
   const { routineId } = req.params
   const { count, duration, activityId } = req.body
+
+  if (!activityId) {
+    next({ name: `NoActivityErr`, message: `No Activity Exist with that Id` })
+    return
+  }
+
   try {
     const routActivities = await addActivityToRoutine({
       count,
