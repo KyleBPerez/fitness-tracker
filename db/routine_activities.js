@@ -7,6 +7,20 @@ const addActivityToRoutine = async ({
   duration,
 }) => {
   try {
+    const { rows: activity } = await client.query(
+      `
+      SELECT * FROM routine_activities
+      WHERE "routineId" = $1 AND "activityId" = $2
+      `,
+      [routineId, activityId]
+    )
+
+    if (activity)
+      throw {
+        name: `ActivityRoutineDupErr`,
+        message: `Can NOT add the same activity to the a single routine`,
+      }
+
     const {
       rows: [routineActivity],
     } = await client.query(
