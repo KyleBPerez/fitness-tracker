@@ -7,7 +7,9 @@ const addActivityToRoutine = async ({
   duration,
 }) => {
   try {
-    const { rows: activity } = await client.query(
+    const {
+      rows: [activity],
+    } = await client.query(
       `
       SELECT * FROM routine_activities
       WHERE "routineId" = $1 AND "activityId" = $2
